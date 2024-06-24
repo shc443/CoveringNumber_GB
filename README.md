@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This research project explores how Deep Neural Networks(DNN) can learn composition of functions with bounded F-1 Norm.
+This research project explores how Deep Neural Networks(DNN) can learn composition of functions with bounded F-1 Norm, referenced in [How DNNs Break the Curse of Dimensionality: Compositionality and Symmetry Learning]https://openreview.net/forum?id=zuWgB7GerW&referrer=%5Bthe%20profile%20of%20Seok%20Hoan%20Choi%5D(%2Fprofile%3Fid%3D~Seok_Hoan_Choi1)
 
 This page includes practical implementations in Python with associated experimental results. 
 These notebooks contain the code, data, and visualizations used in our study, allowing for reproducibility and further exploration.
