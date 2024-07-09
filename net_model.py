@@ -1,10 +1,7 @@
 import torch
-
 import torch.nn as nn
 import torch.nn.functional as F
-
 from torch.distributions.multivariate_normal import MultivariateNormal
-
 import torch.optim as optim
 
 import matplotlib.pyplot as plt
@@ -14,23 +11,12 @@ import wandb
 
 import seaborn as sns
 from math import prod
-# import pickle5 as pickale
 import pickle
 
 
 class Net(nn.Module):
-
-    """(Deep | AccNets | Shallow) Neural Network Model"""
-
-    def __init__(self, widths, nonlin=F.relu, transfer=False, loss='L1', test_loss=None, prof=True, wandb=False):
-        """
-        :param widths(list of ints): widths of each layer in the network; e.g. [d_in, w, d_out] ~ [15, 500, 20] for a ShallowNet
-        :param nonlin: nonlinear activation function; F.relu, F.leaky_relu, F.sigmoid, F.tanh
-        :param transfer (bool, optional): whether to use transfer learning method:
-        :param loss(str): type of loss function used during training; 'L1' or 'L2', all the others will be considered as nuclear norm
-        :param test_loss(str): type of loss function used for validation (test); 'L1' or 'L2', all the others will be considered as nuclear norm
-        :param prof(bool): whether to use Prof. Jacot's L1 definition
-        """
+    def __init__(self, widths, nonlin=F.relu, transfer=False, loss='L1', test_loss=None, prof=True, reduction='mean',
+                 wandb=False):
         super(Net, self).__init__()
         self.widths = widths
         self.nonlin = nonlin
@@ -39,9 +25,10 @@ class Net(nn.Module):
         self.pre_alpha = [0 for _ in self.widths]
         self.opt = None
         self.transfer = transfer
-        self.loss = loss
+        self.loss = loss  # only for non-transfer
         self.prof = prof
         self.test_loss = test_loss
+        self.reduction = reduction
         self.wandb = wandb
 
     def forward(self, x):
@@ -50,6 +37,21 @@ class Net(nn.Module):
             self.pre_alpha[i + 1] = lin(self.alpha[i])
             self.alpha[i + 1] = self.nonlin(self.pre_alpha[i + 1])
         return self.pre_alpha[len(self.widths) - 1]
+
+    def cost(self, Y1, Y2):
+        if self.loss == 'L2':
+            cost = nn.MSELoss(reduction=self.reduction)(Y1, Y2)
+        elif (self.loss == 'L1') and (not self.prof):
+            cost = nn.L1Loss(reduction=self.reduction)(Y1, Y2)
+        elif (self.loss == 'L1') and (self.prof):
+            cost = (torch.sum((Y1 - Y2) ** 2, axis=0) ** 0.5).mean()
+        elif self.loss == 'fro':
+            cost = torch.norm(Y1 - Y2, p='fro')
+        elif self.loss == 'nuc':
+            cost = torch.norm(Y1 - Y2, p='nuc')
+        else:
+            cost = (Y1 - Y2).norm(p='nuc')
+        return cost
 
     def train(self, X_train, Y_train, X_test, Y_test, lr=0.5, weight_decay=0.0, epochs=2000, num_batches=1):
         N = X_train.shape[0] // num_batches
@@ -62,61 +64,27 @@ class Net(nn.Module):
 
         for t in range(epochs):
             for ib in range(num_batches):
-
                 self.opt.zero_grad()
-
-                if self.transfer:
-                    N_half = N // 2
-                    X1 = X_train[N * ib: N * ib + N_half]
-                    X2 = X_train[N * ib + N_half: N * (ib + 1)]
-
-                    Y1 = self(X1)
-                    Y2 = self(X2)
-
-                    cost1 = ((Y1[:, :Y1.shape[1] // 2]
-                              - Y_train[N * ib: N * ib + N_half, :Y1.shape[1] // 2]) ** 2).mean()
-                    ###Todo" typo change cost2 to second half
-                    cost2 = ((Y2[:, Y2.shape[1] // 2:]
-                              - Y_train[N * ib + N_half: N * (ib + 1), Y2.shape[1] // 2:]) ** 2).mean()
-                    cost = cost1 + cost2
-
-                else:
-                    YY_train = self(X_train[N * ib:N * (ib + 1)])
-                    if self.loss == 'L2':
-                        cost = nn.MSELoss(reduction='mean')(YY_train, Y_train[N * ib:N * (ib + 1)])
-                    elif (self.loss == 'L1') and (not self.prof):
-                        cost = nn.L1Loss(reduction='mean')(YY_train, Y_train[N * ib:N * (ib + 1)])
-                    elif (self.loss == 'L1') and (self.prof):
-                        cost = (torch.sum((YY_train - Y_train[N * ib:N * (ib + 1)]) ** 2, axis=0) ** 0.5).mean()
-                    else:
-                        cost = (YY_train - Y_train[N * ib:N * (ib + 1)]).norm(p='nuc')
+                YY_train = self(X_train[N * ib:N * (ib + 1)])
+                cost = self.cost(YY_train, Y_train[N * ib:N * (ib + 1)])
 
                 cost.backward()
                 self.opt.step()
 
+            if self.wandb:
+                if t % 50 == 0:
+                    test_cost = self.cost(self(X_test), Y_test)
+                    if self.transfer:
+                        wandb.log({"cost": cost.item(), "cost1": cost1.item(), "cost2": cost2.item(),
+                                   "test_cost": test_cost.item(),
+                                   "norm": self.norm() / self.depth()})
+                    else:
+                        wandb.log({"cost": cost.item(),
+                                   "test_cost": test_cost.item(),
+                                   "norm": self.norm() / self.depth()})
 
-        if self.test_loss == 'L2':
-            test_cost = nn.MSELoss(reduction='mean')(self(X_test), Y_test)
-        elif (self.test_loss == 'L1') and (not self.prof):
-            test_cost = nn.L1Loss(reduction='mean')(self(X_test), Y_test)
-        elif (self.test_loss == 'L1') and (self.prof):
-            test_cost = (torch.sum((self(X_test) - Y_test) ** 2, axis=0) ** 0.5).mean()
-        else:
-            test_cost = (self(X_test) - Y_test).norm(p='nuc')
-
-        if t % 50 == 0:
-            if self.transfer:
-                wandb.log({"cost": cost.item(), "cost1": cost1.item(), "cost2": cost2.item(),
-                           "test_cost": test_cost.item(),
-                           "norm": self.norm() / self.depth()})
-            else:
-                wandb.log({"cost": cost.item(),
-                           "test_cost": test_cost.item(),
-                           "norm": self.norm() / self.depth()})
-
-
-        return cost.item(), test_cost.item(), self.norm() / self.depth()
-    # Update Loss function : L1 norm along datapoint sum((self(X_test) -  Y_test))**2, axis = row)**0.5.mean()
+        return cost.item(), self.cost(self(X_test), Y_test).item(), self.norm() / self.depth()
+        # Update Loss function : L1 norm along datapoint sum((self(X_test) -  Y_test))**2, axis = row)**0.5.mean()
 
     def nonlin_impact(self):
         nonlin_impact = np.zeros([len(self.alpha)])
@@ -149,7 +117,7 @@ class Net(nn.Module):
     def depth(self):
         return len(self.widths) - 1
 
-    def norms(self):
+    def norms4(self):
         return [0.5 * torch.norm(self.linears[0].weight, p='fro') ** 2] + \
             [0.5 * torch.norm(self.linears[idx].weight, p='nuc') ** 2 + 0.5 * torch.norm(self.linears[idx - 1].weight,
                                                                                          p='nuc') ** 2 for idx in
@@ -179,7 +147,7 @@ class Net(nn.Module):
         return prod(lips) * sum([n / l * (dm + dp) ** 0.5 for n, l, dm, dp in zip(norms, lips, dims[:-1], dims[1:])])
 
     def complexities(self, X_train):
-        norms = self.norms()
+        norms = self.norms4()
         Lip_OPs = self.Lip_OP()
 
         # Compute complexity; complexity2 is based on stable ranks

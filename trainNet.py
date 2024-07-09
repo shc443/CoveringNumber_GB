@@ -41,6 +41,7 @@ class trainNet(Helper):
                  loss=None,
                  test_loss=None,
                  prof=False,
+                 lr_scale = 1,
                  w8_dk=0,
                  requires_iNout=True,
                  path2data=None,
@@ -61,6 +62,7 @@ class trainNet(Helper):
         :param loss (str): loss function used during training; "L1" or "L2", all the others are considered as nuclear norm
         :param test_loss (str): loss function used during testing; "L1" or "L2", all the others are considered as nuclear norm
         :param prof (bool): whether to use Prof. Jacot's L1 code
+        :param lr_scale (float): learning rate scale; 1; manage lr to be smaller or bigger for some cases
         :param w8_dk (float): weight decay rate
         :param requires_iNout (bool, str, optional): depreciated part; set to be 'acc'
         :param path2data (str): directory of dataset
@@ -83,6 +85,7 @@ class trainNet(Helper):
         self.num_Ns = len(self.Ns)
         #         self.deep = deep
         self.L = L
+        self.lr_scale = lr_scale
         self.w8_dk = w8_dk
         self.transfer = transfer
         self.loss = loss
@@ -127,10 +130,10 @@ class trainNet(Helper):
 
         self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N], self.Y[N:N + self.test_N], lr=1.5 * 0.001,
                        weight_decay=self.w8_dk, epochs=1200, num_batches=5)
-        self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N], self.Y[N:N + self.test_N], lr=0.4 * 0.001,
+        self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N], self.Y[N:N + self.test_N], lr=0.4 * 0.001 * self.lr_scale,
                        weight_decay=self.w8_dk + 0.002, epochs=1200, num_batches=5)
         train_cost, test_cost, norm = self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N],
-                                                     self.Y[N:N + self.test_N], lr=0.1 * 0.001
+                                                     self.Y[N:N + self.test_N], lr=0.1 * 0.001 * self.lr_scale
                                                      , weight_decay=self.w8_dk + 0.0005, epochs=1200, num_batches=5)
 
         self.train_costs[iN, t] = train_cost
@@ -145,14 +148,12 @@ class trainNet(Helper):
     def train_loop(self):
         for iN, N in enumerate(self.Ns):
             for t in range(self.trial):
-                self.wandb_setup(N, t)
-                self.train_net(iN, N, t)
-                wandb.finish()
-
-    def train_loop2(self):
-        for iN, N in enumerate(self.Ns):
-            for t in range(self.trial):
-                self.train_net2(iN, N, t)
+                if self.wandb:
+                    self.wandb_setup(N, t)
+                    self.train_net(iN, N, t)
+                    wandb.finish()
+                else:
+                    self.train_net(iN, N, t)
 
     def save_Ws(self, path2data):
         pd.to_pickle(self.eig_Ws, self.eig_path + '_Ws_{path2data}'.format(path2data=path2data))
