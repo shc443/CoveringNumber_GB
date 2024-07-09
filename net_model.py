@@ -15,8 +15,19 @@ import pickle
 
 
 class Net(nn.Module):
+    """(Deep | AccNets | Shallow) Neural Network Model"""
     def __init__(self, widths, nonlin=F.relu, transfer=False, loss='L1', test_loss=None, prof=True, reduction='mean',
                  wandb=False):
+        """
+           :param widths(list of ints): widths of each layer in the network; e.g. [d_in, w, d_out] ~ [15, 500, 20] for a ShallowNet
+           :param nonlin: nonlinear activation function; F.relu, F.leaky_relu, F.sigmoid, F.tanh
+           :param transfer (bool, optional): whether to use transfer learning method:
+           :param loss (str): type of loss function used during training; 'L1' or 'L2', all the others will be considered as nuclear norm
+           :param test_loss (str): type of loss function used for validation (test); 'L1' or 'L2', all the others will be considered as nuclear norm
+           :param prof (bool): whether to use Prof. Jacot's L1 definition
+           :param reduction (str, optional): specifies the reduction to apply to the output; 'mean' or 'sum'
+           :param wandb (bool, optional): whether to use wandb
+        """
         super(Net, self).__init__()
         self.widths = widths
         self.nonlin = nonlin
