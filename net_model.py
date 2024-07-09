@@ -49,16 +49,16 @@ class Net(nn.Module):
             self.alpha[i + 1] = self.nonlin(self.pre_alpha[i + 1])
         return self.pre_alpha[len(self.widths) - 1]
 
-    def cost(self, Y1, Y2):
-        if self.loss == 'L2':
+    def cost(self, Y1, Y2, loss=None):
+        if loss == 'L2':
             cost = nn.MSELoss(reduction=self.reduction)(Y1, Y2)
-        elif (self.loss == 'L1') and (not self.prof):
+        elif (loss == 'L1') and (not self.prof):
             cost = nn.L1Loss(reduction=self.reduction)(Y1, Y2)
-        elif (self.loss == 'L1') and (self.prof):
+        elif (loss == 'L1') and (self.prof):
             cost = (torch.sum((Y1 - Y2) ** 2, axis=0) ** 0.5).mean()
-        elif self.loss == 'fro':
+        elif loss == 'fro':
             cost = torch.norm(Y1 - Y2, p='fro')
-        elif self.loss == 'nuc':
+        elif loss == 'nuc':
             cost = torch.norm(Y1 - Y2, p='nuc')
         else:
             cost = (Y1 - Y2).norm(p='nuc')
@@ -77,14 +77,14 @@ class Net(nn.Module):
             for ib in range(num_batches):
                 self.opt.zero_grad()
                 YY_train = self(X_train[N * ib:N * (ib + 1)])
-                cost = self.cost(YY_train, Y_train[N * ib:N * (ib + 1)])
+                cost = self.cost(YY_train, Y_train[N * ib:N * (ib + 1)], loss=self.loss)
 
                 cost.backward()
                 self.opt.step()
 
             if self.wandb:
                 if t % 50 == 0:
-                    test_cost = self.cost(self(X_test), Y_test)
+                    test_cost = self.cost(self(X_test), Y_test, loss=self.test_loss)
                     if self.transfer:
                         wandb.log({"cost": cost.item(), "cost1": cost1.item(), "cost2": cost2.item(),
                                    "test_cost": test_cost.item(),
@@ -94,7 +94,7 @@ class Net(nn.Module):
                                    "test_cost": test_cost.item(),
                                    "norm": self.norm() / self.depth()})
 
-        return cost.item(), self.cost(self(X_test), Y_test).item(), self.norm() / self.depth()
+        return cost.item(), self.cost(self(X_test), Y_test, loss=self.test_loss).item(), self.norm() / self.depth()
         # Update Loss function : L1 norm along datapoint sum((self(X_test) -  Y_test))**2, axis = row)**0.5.mean()
 
     def nonlin_impact(self):
