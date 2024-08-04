@@ -19,8 +19,18 @@ To run the code in this project, you will need to have Python and Jupyter instal
 
 ```sh
 # Clone the repository
-git clone https://github.com/shc443/CoveringNumber_GB/edit/main/README.md
-cd your-repo-name
+git clone https://github.com/shc443/CoveringNumber_GB
+cd CoveringNumber_GB
 
 # Install required packages
 pip install -r requirements.txt
+
+#Download syntheic data from Author's Google Drive (ignore if you want to start this project from the scratch)
+gdown --fuzzy https://drive.google.com/file/d/1XAuHtRWdUGs5SqDfLttqHSUILmFsgn6b/view?usp=drive_link
+mkdir sampled_kernel/
+unzip sampled_kernel.zip -d data/synthetic/
+
+#Download real-world dataset (WESAD as pkl)
+
+#Download result files(test_error & GB files as pkl)
+

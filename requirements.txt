@@ -5,3 +5,4 @@ sklearn
 tqdm
 scipy
 seaborn
+gdown
