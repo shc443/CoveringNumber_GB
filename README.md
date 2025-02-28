@@ -30,6 +30,10 @@ gdown --fuzzy https://drive.google.com/file/d/1XAuHtRWdUGs5SqDfLttqHSUILmFsgn6b/
 mkdir sampled_kernel/
 unzip sampled_kernel.zip -d data/synthetic/
 
+#Using HuggingFace: you can also download our synthetic datset from https://huggingface.co/datasets/shc443/MaternKernel_compositionality
+#Please ignore this if you downloaded the dataset through the previous google drive method
+#huggingface-cli download shc443/MaternKernel_compositionality --repo-type dataset --local-dir ~/
+
 #Download real-world dataset (WESAD as pkl)
 
 #Download result files(test_error & GB files as pkl)
