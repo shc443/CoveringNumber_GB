@@ -7,6 +7,8 @@ This research project explores how Deep Neural Networks(DNN) can learn compositi
 This page includes practical implementations in Python with associated experimental results. 
 These notebooks contain the code, data, and visualizations used in our study, allowing for reproducibility and further exploration.
 
+*This work was supported in part through the NYU IT High Performance Computing resources, services, and staff expertise. Thank you again to the NYU IT HPC team!*
+
 ## Contents
 
 - `notebooks/`: Directory containing Jupyter notebooks with code and experiments.
