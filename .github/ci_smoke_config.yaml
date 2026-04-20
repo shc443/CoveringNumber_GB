@@ -1,0 +1,68 @@
+# Tiny config used by CI to validate end-to-end pipeline quickly on CPU.
+
+data:
+  d_input: 8
+  d_intermediate: 2
+  d_output: 4
+  n_samples: 160
+
+models:
+  accordion:
+    d_full: 64
+    d_mid: 16
+    L: 2
+    nonlin: 'relu'
+
+  deep:
+    hidden_width: 32
+    depth: 2
+    nonlin: 'relu'
+
+  shallow:
+    hidden_width: 64
+    nonlin: 'relu'
+
+training:
+  train_pool_size: 128
+  test_size: 32
+  num_trials: 1
+  lr_scale: 1.0
+  base_weight_decay: 0.0
+  loss_type: 'L2'
+  test_loss_type: 'L2'
+  prof_jacot: false
+
+  stages:
+    stage_1:
+      lr: 0.001
+      weight_decay: 0.0
+      epochs: 1
+    stage_2:
+      lr: 0.0005
+      weight_decay: 0.0
+      epochs: 1
+    stage_3:
+      lr: 0.0001
+      weight_decay: 0.0
+      epochs: 1
+
+sweep:
+  nu_values: [2.0, 8.0]
+  N_values: [64]
+  architectures: ['accordion', 'deep', 'shallow']
+  focus_nu_values: [2.0, 8.0]
+  focus_N_values: [64]
+
+output:
+  results_dir: './results_ci'
+  save_models: true
+  save_frequency: 5
+  log_level: 'INFO'
+
+random_seed: 42
+
+hardware:
+  device: 'cpu'
+  num_workers: 0
+  pin_memory: false
+

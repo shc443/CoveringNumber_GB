@@ -1,0 +1,29 @@
+# OS files
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Experiment outputs
+results/**
+!results/README.md
+cleaning/curse_dimensionality_sim/results/**
+!cleaning/curse_dimensionality_sim/results/README.md
+*.log
+
+# Local editor folders
+.idea/
+.vscode/
+

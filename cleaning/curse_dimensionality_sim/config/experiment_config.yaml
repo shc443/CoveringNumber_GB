@@ -1,0 +1,83 @@
+# Experiment Configuration for Compositionality Learning Research
+# Configuration for studying how DNNs break the curse of dimensionality
+
+# Data generation parameters
+data:
+  d_input: 15              # Input dimension
+  d_intermediate: 3        # Intermediate dimension for composition
+  d_output: 20            # Output dimension  
+  n_samples: 52500        # Total samples (50000 train + 2500 test)
+
+# Model architectures
+models:
+  accordion:
+    d_full: 900           # Expansion layer width
+    d_mid: 100            # Contraction layer width
+    L: 5                  # Number of accordion layers
+    nonlin: 'relu'        # Activation function
+    
+  deep:
+    hidden_width: 500     # Hidden layer width
+    depth: 12            # Number of hidden layers
+    nonlin: 'relu'
+    
+  shallow:
+    hidden_width: 50000   # Very wide hidden layer
+    nonlin: 'relu'
+
+# Training configuration  
+training:
+  train_pool_size: 50000   # Fixed training pool; use first N samples from this pool
+  test_size: 2500         # Test set size
+  num_trials: 3          # Trials per configuration
+  lr_scale: 1.0          # Global learning rate scale
+  base_weight_decay: 0.0 # Base weight decay
+  loss_type: 'L2'        # Training loss
+  test_loss_type: 'L2'   # Test loss
+  prof_jacot: false      # Use Prof. Jacot's L1 definition
+  
+  # Multi-stage training schedule
+  stages:
+    stage_1:
+      lr: 0.0015          # 1.5 * 0.001  
+      weight_decay: 0.0
+      epochs: 1200
+      
+    stage_2: 
+      lr: 0.0004          # 0.4 * 0.001
+      weight_decay: 0.002
+      epochs: 1200
+      
+    stage_3:
+      lr: 0.0001          # 0.1 * 0.001  
+      weight_decay: 0.005
+      epochs: 1200
+
+# Parameter sweep configuration
+sweep:
+  nu_values: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0,
+              5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0]  # ν ∈ [0.5, 10]
+  
+  N_values: [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000]
+  
+  architectures: ['accordion', 'deep', 'shallow']
+  
+  # Focus experiments (smaller parameter sets for quick testing)
+  focus_nu_values: [2.0, 5.0, 8.0, 10.0]
+  focus_N_values: [1000, 5000, 20000]
+
+# Output and logging
+output:
+  results_dir: './results'
+  save_models: true
+  save_frequency: 10      # Save intermediate results every N experiments
+  log_level: 'INFO'
+  
+# Reproducibility
+random_seed: 42
+
+# Hardware configuration
+hardware:
+  device: 'cuda'          # 'cuda' or 'cpu'
+  num_workers: 4         # For data loading
+  pin_memory: true       # For CUDA efficiency

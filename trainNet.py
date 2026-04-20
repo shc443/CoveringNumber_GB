@@ -128,13 +128,13 @@ class trainNet(Helper):
         self.net = Net(self.widths, transfer=self.transfer, loss=self.loss, test_loss=self.test_loss, prof=self.prof,
                        wandb=self.wandb).cuda()
 
-        self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N], self.Y[N:N + self.test_N], lr=1.5 * 0.001,
+        self.net.train(self.X[:N], self.Y[:N], self.X[50000:50000 + self.test_N], self.Y[50000:50000 + self.test_N], lr=1.5 * 0.001,
                        weight_decay=self.w8_dk, epochs=1200, num_batches=5)
-        self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N], self.Y[N:N + self.test_N], lr=0.4 * 0.001 * self.lr_scale,
+        self.net.train(self.X[:N], self.Y[:N], self.X[50000:50000 + self.test_N], self.Y[50000:50000 + self.test_N], lr=0.4 * 0.001 * self.lr_scale,
                        weight_decay=self.w8_dk + 0.002, epochs=1200, num_batches=5)
-        train_cost, test_cost, norm = self.net.train(self.X[:N], self.Y[:N], self.X[N:N + self.test_N],
-                                                     self.Y[N:N + self.test_N], lr=0.1 * 0.001 * self.lr_scale
-                                                     , weight_decay=self.w8_dk + 0.0005, epochs=1200, num_batches=5)
+        train_cost, test_cost, norm = self.net.train(self.X[:N], self.Y[:N], self.X[50000:50000 + self.test_N],
+                                                     self.Y[50000:50000 + self.test_N], lr=0.1 * 0.001 * self.lr_scale
+                                                     , weight_decay=self.w8_dk + 0.005, epochs=1200, num_batches=5)
 
         self.train_costs[iN, t] = train_cost
         self.test_costs[iN, t] = test_cost
@@ -168,7 +168,6 @@ class trainNet(Helper):
 
 if __name__ == "__main__":
     fire.Fire(trainNet)
-
 
 
 

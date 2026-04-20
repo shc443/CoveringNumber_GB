@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a reproducible bug in experiments, scripts, or docs.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please include enough detail for us to reproduce quickly.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Include exact command(s), config path(s), and seed(s).
+      placeholder: |
+        1. python experiments/run_compositionality_study.py --focus --config ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit hash
+      description: Output of `git rev-parse HEAD`.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, CPU/GPU details.
+      placeholder: |
+        OS:
+        Python:
+        PyTorch:
+        CUDA:
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or traceback
+      render: shell
+

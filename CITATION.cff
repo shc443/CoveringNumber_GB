@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the paper below."
+title: "How DNNs Break the Curse of Dimensionality: Compositionality and Symmetry Learning"
+type: software
+license: MIT
+url: "https://github.com/shc443/CoveringNumber_GB"
+repository-code: "https://github.com/shc443/CoveringNumber_GB"
+authors:
+  - family-names: Jacot
+    given-names: Arthur
+    affiliation: "NYU Courant Institute of Mathematical Sciences"
+  - family-names: Choi
+    given-names: Seok Hoan
+    affiliation: "NYU Courant Institute of Mathematical Sciences"
+  - family-names: Wen
+    given-names: Yuxiao
+    affiliation: "NYU Courant Institute of Mathematical Sciences"
+preferred-citation:
+  type: conference-paper
+  title: "How DNNs Break the Curse of Dimensionality: Compositionality and Symmetry Learning"
+  authors:
+    - family-names: Jacot
+      given-names: Arthur
+    - family-names: Choi
+      given-names: Seok Hoan
+    - family-names: Wen
+      given-names: Yuxiao
+  year: 2025
+  conference: "International Conference on Learning Representations"
+  url: "https://arxiv.org/abs/2407.05664"
+

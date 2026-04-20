@@ -1,42 +1,99 @@
 # How DNNs Break the Curse of Dimensionality: Compositionality and Symmetry Learning
 
-## Introduction
+[![arXiv](https://img.shields.io/badge/arXiv-2407.05664-b31b1b.svg)](https://arxiv.org/abs/2407.05664)
+[![ICLR 2025](https://img.shields.io/badge/Conference-ICLR%202025-0c6cf2.svg)](https://iclr.cc/)
+[![CI](https://github.com/shc443/CoveringNumber_GB/actions/workflows/ci.yml/badge.svg)](https://github.com/shc443/CoveringNumber_GB/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This research project explores how Deep Neural Networks(DNN) can learn composition of functions with bounded F-1 Norm, referenced in [How DNNs Break the Curse of Dimensionality: Compositionality and Symmetry Learning]
+Official codebase for the ICLR 2025 paper by Arthur Jacot, Seok Hoan Choi, and Yuxiao Wen.
 
-This page includes practical implementations in Python with associated experimental results. 
-These notebooks contain the code, data, and visualizations used in our study, allowing for reproducibility and further exploration.
+## Project Links
 
-*This work was supported in part through the NYU IT High Performance Computing resources, services, and staff expertise. Thank you again to the NYU IT HPC team!*
+- Paper: https://arxiv.org/abs/2407.05664
+- Project page: https://shc443.github.io/CoveringNumber_GB/
+- Colab notebook: `cleaning/Compositionality_Learning_Experiments.ipynb`
+- Colab guide: [COLAB_GUIDE.md](COLAB_GUIDE.md)
+- Pages deploy workflow: [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
 
-## Contents
+## Two-Minute Quickstart
 
-- `notebooks/`: Directory containing Jupyter notebooks with code and experiments.
-- `data/`: Directory with both syntheic & real-world datasets used in our experiments
-- `README.md`: This file, providing an overview and instructions.
-
-## Installation
-
-To run the code in this project, you will need to have Python and Jupyter installed. You can set up a virtual environment and install the required packages using the following commands:
-
-```sh
-# Clone the repository
+```bash
 git clone https://github.com/shc443/CoveringNumber_GB
 cd CoveringNumber_GB
+pip install -r cleaning/curse_dimensionality_sim/requirements.txt
+python3 cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py --focus
+```
 
-# Install required packages
-pip install -r requirements.txt
+Equivalent `make` shortcuts are available:
 
-#Download syntheic data from Author's Google Drive (ignore if you want to start this project from the scratch)
-gdown --fuzzy https://drive.google.com/file/d/1XAuHtRWdUGs5SqDfLttqHSUILmFsgn6b/view?usp=drive_link
-mkdir sampled_kernel/
-unzip sampled_kernel.zip -d data/synthetic/
+```bash
+make install
+make smoke
+make focus
+```
 
-#Using HuggingFace: you can also download our synthetic datset from https://huggingface.co/datasets/shc443/MaternKernel_compositionality
-#Please ignore this if you downloaded the dataset through the previous google drive method
-#huggingface-cli download shc443/MaternKernel_compositionality --repo-type dataset --local-dir ~/
+## Repository Map
 
-#Download real-world dataset (WESAD as pkl)
+- `cleaning/curse_dimensionality_sim/`: refactored, script-first framework (recommended).
+- `Makefile`: top-level shortcuts for install, smoke, focus, full, and docs preview.
+- `paper_code/`: original experiment notebooks used during paper development.
+- `notebooks/`: additional exploratory notebooks.
+- `data/`: local dataset artifacts.
+- `docs/`: GitHub Pages site.
 
-#Download result files(test_error & GB files as pkl)
+## Reproducibility Commands
 
+All commands below are run from repository root.
+
+| Goal | Command | Expected outputs |
+|---|---|---|
+| CI smoke validation on CPU | `python3 cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py --focus --config .github/ci_smoke_config.yaml` | `results_ci/parameter_sweep_results.csv`, `results_ci/figures/*.png` |
+| Focused local run | `python3 cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py --focus` | `cleaning/curse_dimensionality_sim/results/parameter_sweep_results.csv` |
+| Full sweep | `python3 cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py` | `cleaning/curse_dimensionality_sim/results/` |
+| Resume interrupted full sweep | `python3 cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py --resume` | Updated `parameter_sweep_results.csv` |
+| Analysis-only mode | `python3 cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py --analyze-only` | `summary_report.json`, figure files |
+| Framework smoke test | `python3 cleaning/curse_dimensionality_sim/test_framework.py` | console validation of data/models/training |
+
+## Data and Artifacts
+
+- Pre-generated synthetic dataset (Hugging Face):
+  - https://huggingface.co/datasets/shc443/MaternKernel_compositionality
+- Optional Google Drive dataset workflow:
+  - see [COLAB_GUIDE.md](COLAB_GUIDE.md)
+- Output conventions:
+  - [`results/README.md`](results/README.md)
+  - [`cleaning/curse_dimensionality_sim/results/README.md`](cleaning/curse_dimensionality_sim/results/README.md)
+
+## Framework Defaults (Refactored Path)
+
+- Smoothness sweep: `nu_g, nu_h in [0.5, 10.0]` (step `0.5`)
+- Architectures: `accordion`, `deep`, `shallow`
+- Fixed train/test protocol: train pool of `50,000` with fixed test set `2,500`
+- Multi-stage training schedule is config-driven via:
+  - `cleaning/curse_dimensionality_sim/config/experiment_config.yaml`
+
+## Citation
+
+If you use this repository, please cite:
+
+```bibtex
+@inproceedings{jacot2025dnns,
+  title={How DNNs Break the Curse of Dimensionality: Compositionality and Symmetry Learning},
+  author={Jacot, Arthur and Choi, Seok Hoan and Wen, Yuxiao},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025}
+}
+```
+
+Machine-readable citation metadata is in [`CITATION.cff`](CITATION.cff).
+
+## Contributing and Policies
+
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- Security: [SECURITY.md](SECURITY.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
+
+## License
+
+This project is released under the [MIT License](LICENSE).

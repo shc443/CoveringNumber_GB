@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint-import-smoke:
+    name: Lint + Import + Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r cleaning/curse_dimensionality_sim/requirements.txt
+          pip install ruff
+
+      - name: Lint
+        run: |
+          ruff check cleaning/curse_dimensionality_sim --select E9,F63,F7,F82
+
+      - name: Import and syntax checks
+        run: |
+          PYTHONPYCACHEPREFIX=/tmp/pycache python -m compileall cleaning/curse_dimensionality_sim
+          python -c "import sys; sys.path.insert(0, 'cleaning/curse_dimensionality_sim'); from src.data.kernels import CompositionalDataGenerator"
+          python -c "import sys; sys.path.insert(0, 'cleaning/curse_dimensionality_sim'); from src.models.accordion_net import AccordionNet"
+          python -c "import sys; sys.path.insert(0, 'cleaning/curse_dimensionality_sim'); from src.experiments.runner import CompositionExperimentRunner"
+
+      - name: CPU smoke test (`--focus`)
+        env:
+          MPLBACKEND: Agg
+        run: |
+          python cleaning/curse_dimensionality_sim/experiments/run_compositionality_study.py \
+            --focus \
+            --config .github/ci_smoke_config.yaml

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CoveringNumber_GB | ICLR Project Page</title>
+    <meta name="description" content="How DNNs Break the Curse of Dimensionality: project page, code, and reproducibility guide.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-bg"></div>
+      <div class="container">
+        <p class="eyebrow">ICLR 2025</p>
+        <h1>How DNNs Break the Curse of Dimensionality</h1>
+        <p class="subtitle">
+          Compositionality and symmetry learning with reproducible synthetic experiments.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://arxiv.org/abs/2407.05664" target="_blank" rel="noreferrer">Paper</a>
+          <a class="btn" href="https://github.com/shc443/CoveringNumber_GB" target="_blank" rel="noreferrer">Code</a>
+          <a class="btn" href="https://colab.research.google.com/github/shc443/CoveringNumber_GB/blob/main/cleaning/Compositionality_Learning_Experiments.ipynb" target="_blank" rel="noreferrer">Colab</a>
+          <a class="btn" href="https://huggingface.co/datasets/shc443/MaternKernel_compositionality" target="_blank" rel="noreferrer">Dataset</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Abstract</h2>
+        <p>
+          This project studies how deep architectures exploit compositional structure
+          <code>f = h ∘ g</code> to avoid shallow-model sample complexity scaling in high dimensions.
+          The repository includes original notebooks and a refactored framework for reproducible
+          sweeps over smoothness parameters, sample sizes, and architecture families.
+        </p>
+      </section>
+
+      <section class="grid-3">
+        <article class="card">
+          <h3>Compositional Data</h3>
+          <p>Matérn kernel sampling controls smoothness for both <code>g</code> and <code>h</code> components.</p>
+        </article>
+        <article class="card">
+          <h3>Architectures</h3>
+          <p>Accordion, Deep, and Shallow baselines are compared under a unified training schedule.</p>
+        </article>
+        <article class="card">
+          <h3>Theory Link</h3>
+          <p>Empirical results are paired with complexity metrics and bound-performance diagnostics.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Method Pipeline</h2>
+        <div class="pipeline">
+          <div class="node">Sample <span>Matérn g</span></div>
+          <div class="arrow">→</div>
+          <div class="node">Compose <span>Y = h(g(X))</span></div>
+          <div class="arrow">→</div>
+          <div class="node">Train <span>Acc/Deep/Shallow</span></div>
+          <div class="arrow">→</div>
+          <div class="node">Analyze <span>loss + complexity</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Run It</h2>
+        <pre><code>pip install -r cleaning/curse_dimensionality_sim/requirements.txt
+cd cleaning/curse_dimensionality_sim
+python experiments/run_compositionality_study.py --focus</code></pre>
+        <p class="mono">
+          Full sweep and resume:
+          <code>python experiments/run_compositionality_study.py</code>,
+          <code>python experiments/run_compositionality_study.py --resume</code>
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Key Artifacts</h2>
+        <ul>
+          <li><code>cleaning/curse_dimensionality_sim/results/parameter_sweep_results.csv</code></li>
+          <li><code>cleaning/curse_dimensionality_sim/results/figures/heatmap_*.png</code></li>
+          <li><code>cleaning/curse_dimensionality_sim/results/summary_report.json</code></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-row">
+        <p>CoveringNumber_GB • MIT License</p>
+        <a href="https://github.com/shc443/CoveringNumber_GB/blob/main/CITATION.cff" target="_blank" rel="noreferrer">Citation</a>
+      </div>
+    </footer>
+  </body>
+</html>
+
