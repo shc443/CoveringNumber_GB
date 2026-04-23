@@ -36,10 +36,12 @@ make focus
 
 - `cleaning/curse_dimensionality_sim/`: refactored, script-first framework (recommended).
 - `Makefile`: top-level shortcuts for install, smoke, focus, full, and docs preview.
-- `paper_code/`: original experiment notebooks used during paper development.
+- `MaternKernelTorch.py`: GPU-accelerated PyTorch Matérn kernel with learnable smoothness.
+- `paper_code/`: canonical experiment notebooks used during paper development.
 - `notebooks/`: additional exploratory notebooks.
 - `data/`: local dataset artifacts.
 - `docs/`: GitHub Pages site.
+- `archive/`: superseded / scratch files retained for provenance — see [`archive/README.md`](archive/README.md).
 
 ## Reproducibility Commands
 

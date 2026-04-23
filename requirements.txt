@@ -1,8 +1,1 @@
-torch
-pandas
-numpy
-sklearn
-tqdm
-scipy
-seaborn
-gdown
+-r cleaning/curse_dimensionality_sim/requirements.txt
