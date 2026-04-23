@@ -8,7 +8,7 @@ This document provides the mathematical foundation for the research presented in
 
 ---
 
-## 📚 Core Theoretical Contributions
+## Core Theoretical Contributions
 
 ### 1. Compositionality Learning Theorem
 
@@ -41,7 +41,7 @@ Where:
 
 ---
 
-## 🏗️ Accordion Networks (AccNets)
+## Accordion Networks (AccNets)
 
 ### Architecture Design
 
@@ -70,7 +70,7 @@ Where each f_i consists of:
 
 ---
 
-## 🔢 Complexity Measures
+## Complexity Measures
 
 ### Our Novel Complexity Bound (2024)
 
@@ -112,7 +112,7 @@ Stable rank provides a continuous measure of effective dimensionality.
 
 ---
 
-## 🌊 Matérn Kernels for Synthetic Data
+## Matérn Kernels for Synthetic Data
 
 ### Mathematical Definition
 
@@ -154,7 +154,7 @@ This creates compositional structure Y = h(g(X)) with controllable regularity.
 
 ---
 
-## 🎯 Key Research Questions
+## Key Research Questions
 
 ### 1. When Do Deep Networks Beat Shallow Networks?
 
@@ -184,7 +184,7 @@ This creates compositional structure Y = h(g(X)) with controllable regularity.
 
 ---
 
-## 🔬 Experimental Validation
+## Experimental Validation
 
 ### Parameter Space
 
@@ -208,7 +208,7 @@ This creates compositional structure Y = h(g(X)) with controllable regularity.
 
 ---
 
-## 🧠 Implications for Deep Learning Theory
+## Implications for Deep Learning Theory
 
 ### Breaking the Curse of Dimensionality
 
@@ -236,7 +236,7 @@ This connects our work to harmonic analysis and approximation theory.
 
 ---
 
-## 🔗 Connections to Related Work
+## Connections to Related Work
 
 ### Neural Tangent Kernel (NTK) Theory
 - Our bounds extend NTK analysis to compositional settings

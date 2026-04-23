@@ -47,7 +47,7 @@ def load_compositional_dataset(nu_g: float = 2.0, nu_h: float = 8.0, split: str 
         )
         
         if len(filtered) == 0:
-            print(f"⚠️  No data found for ν_g={nu_g}, ν_h={nu_h}. Using closest available...")
+            print(f"Warning: no data found for nu_g={nu_g}, nu_h={nu_h}. Using closest available.")
             # Use first available dataset as fallback
             filtered = dataset.select(range(1))
         
@@ -56,11 +56,11 @@ def load_compositional_dataset(nu_g: float = 2.0, nu_h: float = 8.0, split: str 
         X = torch.tensor(sample['X'], dtype=torch.float32)
         Y = torch.tensor(sample['Y'], dtype=torch.float32)
         
-        print(f"✅ Loaded data: X shape={X.shape}, Y shape={Y.shape}")
+        print(f"Loaded data: X shape={X.shape}, Y shape={Y.shape}")
         return X, Y
         
     except Exception as e:
-        print(f"⚠️  Could not load from Hugging Face: {e}")
+        print(f"Warning: could not load from Hugging Face: {e}")
         print("Falling back to local generation...")
         
         # Fallback to local generation
@@ -75,7 +75,7 @@ def load_compositional_dataset(nu_g: float = 2.0, nu_h: float = 8.0, split: str 
         )
         
         X, Y = generator.generate_compositional_data(nu_g, nu_h)
-        print(f"✅ Generated data locally: X shape={X.shape}, Y shape={Y.shape}")
+        print(f"Generated data locally: X shape={X.shape}, Y shape={Y.shape}")
         return X, Y
 
 
@@ -136,7 +136,7 @@ def quick_experiment(nu_g: float = 2.0, nu_h: float = 8.0, N_train: int = 8000):
             'test_loss': test_loss
         }
         
-        print(f"✅ {name}: Train Loss={train_loss:.4f}, Test Loss={test_loss:.4f}")
+        print(f"{name}: Train Loss={train_loss:.4f}, Test Loss={test_loss:.4f}")
     
     # Print summary
     print("\n" + "=" * 60)
@@ -148,7 +148,7 @@ def quick_experiment(nu_g: float = 2.0, nu_h: float = 8.0, N_train: int = 8000):
     
     # Find best model
     best_model = min(results, key=lambda x: results[x]['test_loss'])
-    print(f"\n🏆 Best Model: {best_model}")
+    print(f"\nBest Model: {best_model}")
     
     return results
 

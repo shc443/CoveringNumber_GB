@@ -4,7 +4,7 @@ This guide provides step-by-step instructions for running experiments and reprod
 
 ---
 
-## 🎯 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -31,7 +31,7 @@ python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
 
 ---
 
-## 🔬 Running Experiments
+## Running Experiments
 
 ### 1. Quick Validation Experiment
 
@@ -83,7 +83,7 @@ python run_compositionality_study.py --analyze-only
 
 ---
 
-## 📊 Understanding the Output
+## Understanding the Output
 
 ### Directory Structure After Running
 
@@ -122,7 +122,7 @@ Scatter plots of complexity bounds vs empirical performance:
 
 ---
 
-## 🛠️ Customizing Experiments
+## Customizing Experiments
 
 ### Configuration File
 
@@ -195,7 +195,7 @@ sweep:
 
 ---
 
-## 🧪 Using Individual Components
+## Using Individual Components
 
 ### Generate Custom Datasets
 
@@ -266,7 +266,7 @@ print(f"Effective rank: {torch.linalg.matrix_rank(bottleneck_repr)}")
 
 ---
 
-## 📈 Visualization and Analysis
+## Visualization and Analysis
 
 ### Creating Custom Plots
 
@@ -319,7 +319,7 @@ print(best_configs[['architecture', 'nu_g', 'nu_h', 'N', 'final_test_loss']])
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -378,7 +378,7 @@ model.gradient_checkpointing = True
 
 ---
 
-## 📝 Best Practices
+## Best Practices
 
 ### Reproducible Experiments
 
@@ -419,4 +419,4 @@ The framework automatically saves results every 10 experiments to prevent data l
 
 ---
 
-*For additional questions, refer to the [API Reference](API_REFERENCE.md) or [Theoretical Background](THEORETICAL_BACKGROUND.md) documentation.*
+See also: [API Reference](cleaning/curse_dimensionality_sim/API_REFERENCE.md), [Theoretical Background](THEORETICAL_BACKGROUND.md).

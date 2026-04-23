@@ -92,7 +92,7 @@ class CompositionCLI:
     def demo(self, args):
         """Run quick 5-minute demonstration."""
         print("=" * 70)
-        print("🚀 COMPOSITIONALITY LEARNING - QUICK DEMO")
+        print("COMPOSITIONALITY LEARNING - QUICK DEMO")
         print("=" * 70)
         print(f"Device: {self.device}")
         print("Expected runtime: ~5 minutes")
@@ -105,7 +105,7 @@ class CompositionCLI:
         N_train = 8000
         epochs_per_stage = 50  # Reduced for demo
         
-        print(f"\n📊 Parameters: ν_g={nu_g}, ν_h={nu_h}, N={N_train}")
+        print(f"\nParameters: ν_g={nu_g}, ν_h={nu_h}, N={N_train}")
         
         # Generate or load data
         generator = CompositionalDataGenerator(
@@ -126,7 +126,7 @@ class CompositionCLI:
         from src.models.accordion_net import AccordionNet
         from src.training.trainer import CompositionTrainer
         
-        print("\n🔧 Training AccordionNet...")
+        print("\nTraining AccordionNet...")
         model = AccordionNet([15, 900, 100, 20], L=5, device=self.device)
         
         trainer = CompositionTrainer(model, self.device)
@@ -147,7 +147,7 @@ class CompositionCLI:
         
         # Display results
         print("\n" + "=" * 70)
-        print("✅ DEMO RESULTS")
+        print("DEMO RESULTS")
         print("=" * 70)
         print(f"Final Test Loss: {results['final_test_loss']:.4f}")
         print(f"Complexity Bound: {bounds['complexity_standard']:.2e}")
@@ -164,13 +164,13 @@ class CompositionCLI:
                 'N': N_train
             }, f, indent=2)
         
-        print(f"\n💾 Results saved to: {demo_file}")
+        print(f"\nResults saved to: {demo_file}")
         return 0
     
     def mini(self, args):
         """Run mini parameter sweep (~30 minutes)."""
         print("=" * 70)
-        print("🔬 COMPOSITIONALITY LEARNING - MINI PARAMETER SWEEP")
+        print("COMPOSITIONALITY LEARNING - MINI PARAMETER SWEEP")
         print("=" * 70)
         print(f"Device: {self.device}")
         print("Expected runtime: ~30 minutes")
@@ -184,7 +184,7 @@ class CompositionCLI:
         architectures = ['accordion', 'deep', 'shallow']
         
         total_experiments = len(nu_values) * len(nu_values) * len(N_values) * len(architectures)
-        print(f"\n📊 Total experiments: {total_experiments}")
+        print(f"\nTotal experiments: {total_experiments}")
         print(f"ν values: {nu_values}")
         print(f"N values: {N_values}")
         print(f"Architectures: {architectures}")
@@ -197,7 +197,7 @@ class CompositionCLI:
         )
         
         # Run sweep
-        print("\n🏃 Starting parameter sweep...")
+        print("\nStarting parameter sweep...")
         results_df = runner.run_parameter_sweep(
             architectures=architectures,
             nu_values=nu_values,
@@ -207,7 +207,7 @@ class CompositionCLI:
         )
         
         # Analyze results
-        print("\n📈 Generating visualizations...")
+        print("\nGenerating visualizations...")
         analyzer = CompositionAnalyzer(results_df)
         figures_dir = self.results_dir / 'figures'
         figures_dir.mkdir(exist_ok=True)
@@ -225,7 +225,7 @@ class CompositionCLI:
         
         # Display results
         print("\n" + "=" * 70)
-        print("✅ MINI SWEEP RESULTS")
+        print("MINI SWEEP RESULTS")
         print("=" * 70)
         
         for arch in architectures:
@@ -239,21 +239,21 @@ class CompositionCLI:
         # Save results
         results_file = self.results_dir / 'mini_parameter_sweep.csv'
         results_df.to_csv(results_file, index=False)
-        print(f"💾 Results saved to: {results_file}")
+        print(f"Results saved to: {results_file}")
         
         return 0
     
     def full(self, args):
         """Run full parameter sweep from paper (~48 hours)."""
         print("=" * 70)
-        print("🏭 COMPOSITIONALITY LEARNING - FULL PARAMETER SWEEP")
+        print("COMPOSITIONALITY LEARNING - FULL PARAMETER SWEEP")
         print("=" * 70)
         print(f"Device: {self.device}")
-        print("⚠️  Expected runtime: ~48 hours")
+        print("Warning: Expected runtime: ~48 hours")
         print("-" * 70)
         
         if not args.force:
-            response = input("\n⚠️  This will take ~48 hours. Continue? [y/N]: ")
+            response = input("\nWarning: This will take ~48 hours. Continue? [y/N]: ")
             if response.lower() != 'y':
                 print("Aborted.")
                 return 1
@@ -267,7 +267,7 @@ class CompositionCLI:
         num_trials = 3
         
         total_experiments = len(nu_values)**2 * len(N_values) * len(architectures) * num_trials
-        print(f"\n📊 Total experiments: {total_experiments:,}")
+        print(f"\nTotal experiments: {total_experiments:,}")
         print(f"ν values: {len(nu_values)} values from 0.5 to 10.0")
         print(f"N values: {N_values}")
         print(f"Architectures: {architectures}")
@@ -287,8 +287,8 @@ class CompositionCLI:
         )
         
         # Run sweep with resume support
-        print("\n🏃 Starting full parameter sweep...")
-        print("💡 Tip: You can safely interrupt and resume with 'python run.py full --resume'")
+        print("\nStarting full parameter sweep...")
+        print("Tip: You can safely interrupt and resume with 'python run.py full --resume'")
         
         if args.resume:
             results_df = runner.resume_interrupted_sweep(
@@ -307,7 +307,7 @@ class CompositionCLI:
             )
         
         # Full analysis
-        print("\n📈 Generating comprehensive analysis...")
+        print("\nGenerating comprehensive analysis...")
         analyzer = CompositionAnalyzer(results_df)
         
         # Generate all visualizations
@@ -345,7 +345,7 @@ class CompositionCLI:
         # Display completion
         runtime = time.time() - start_time
         print("\n" + "=" * 70)
-        print("✅ FULL SWEEP COMPLETE")
+        print("FULL SWEEP COMPLETE")
         print("=" * 70)
         print(f"Total experiments: {len(results_df):,}")
         print(f"Total runtime: {runtime/3600:.1f} hours")
@@ -356,7 +356,7 @@ class CompositionCLI:
     def custom(self, args):
         """Run custom experiment with specified parameters."""
         print("=" * 70)
-        print("🎯 COMPOSITIONALITY LEARNING - CUSTOM EXPERIMENT")
+        print("COMPOSITIONALITY LEARNING - CUSTOM EXPERIMENT")
         print("=" * 70)
         
         # Custom parameters
@@ -401,7 +401,7 @@ class CompositionCLI:
         from src.training.trainer import CompositionTrainer
         trainer = CompositionTrainer(model, self.device)
         
-        print(f"\n🔧 Training {architecture}...")
+        print(f"\nTraining {architecture}...")
         results = trainer.train_full_schedule(
             X_train, Y_train, X_test, Y_test,
             lr_scale=args.lr_scale
@@ -409,7 +409,7 @@ class CompositionCLI:
         
         # Display results
         print("\n" + "=" * 70)
-        print("✅ CUSTOM EXPERIMENT RESULTS")
+        print("CUSTOM EXPERIMENT RESULTS")
         print("=" * 70)
         print(f"Final Test Loss: {results['final_test_loss']:.4f}")
         
@@ -432,14 +432,14 @@ class CompositionCLI:
             with open(output_file, 'w') as f:
                 json.dump(output, f, indent=2)
             
-            print(f"💾 Results saved to: {output_file}")
+            print(f"Results saved to: {output_file}")
         
         return 0
     
     def analyze(self, args):
         """Analyze existing results without running experiments."""
         print("=" * 70)
-        print("📊 COMPOSITIONALITY LEARNING - ANALYSIS MODE")
+        print("COMPOSITIONALITY LEARNING - ANALYSIS MODE")
         print("=" * 70)
         
         # Find results file
@@ -449,7 +449,7 @@ class CompositionCLI:
             # Look for most recent results
             csv_files = list(self.results_dir.glob('*.csv'))
             if not csv_files:
-                print("❌ No results files found. Run experiments first.")
+                print("No results files found. Run experiments first.")
                 return 1
             
             results_file = max(csv_files, key=lambda p: p.stat().st_mtime)
@@ -471,7 +471,7 @@ class CompositionCLI:
         architectures = results_df['architecture'].unique()
         
         # Generate heatmaps
-        print("\n📈 Generating performance heatmaps...")
+        print("\nGenerating performance heatmaps...")
         for arch in architectures:
             # Find common N value
             N_values = results_df[results_df['architecture'] == arch]['N'].unique()
@@ -482,10 +482,10 @@ class CompositionCLI:
                 N=int(N),
                 save_path=str(figures_dir / f'analysis_heatmap_{arch}.png')
             )
-            print(f"  ✅ {arch} heatmap saved")
+            print(f"  {arch} heatmap saved")
         
         # Generate summary
-        print("\n📊 Computing summary statistics...")
+        print("\nComputing summary statistics...")
         summary = analyzer.generate_summary_report()
         
         # Display summary
@@ -499,7 +499,7 @@ class CompositionCLI:
             print(f"  Best Test Loss: {stats['best_test_loss']:.4f}")
         
         # Find best configurations
-        print("\n🏆 Best Configurations:")
+        print("\nBest Configurations:")
         best = results_df.nsmallest(5, 'final_test_loss')
         for _, row in best.iterrows():
             print(f"  {row['architecture']:10} | ν_g={row['nu_g']:4.1f}, ν_h={row['nu_h']:4.1f}, N={row['N']:6d} | Loss={row['final_test_loss']:.4f}")
@@ -509,7 +509,7 @@ class CompositionCLI:
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
         
-        print(f"\n💾 Analysis saved to: {figures_dir.parent}")
+        print(f"\nAnalysis saved to: {figures_dir.parent}")
         
         return 0
 

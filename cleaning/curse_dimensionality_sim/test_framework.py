@@ -35,7 +35,7 @@ def test_data_generation():
     
     X, Y = generator.generate_compositional_data(nu_g=2.0, nu_h=8.0, seed=42)
     
-    print(f"✅ Generated data: X shape={X.shape}, Y shape={Y.shape}")
+    print(f"Generated data: X shape={X.shape}, Y shape={Y.shape}")
     print(f"   X stats: mean={X.mean():.3f}, std={X.std():.3f}")
     print(f"   Y stats: mean={Y.mean():.3f}, std={Y.std():.3f}")
     
@@ -55,7 +55,7 @@ def test_models(X, Y):
         device=device
     )
     out_acc = accordion(X[:10])
-    print(f"✅ AccordionNet: output shape={out_acc.shape}")
+    print(f"AccordionNet: output shape={out_acc.shape}")
     
     # Test DeepNet
     deep = DeepNet(
@@ -63,7 +63,7 @@ def test_models(X, Y):
         device=device
     )
     out_deep = deep(X[:10])
-    print(f"✅ DeepNet: output shape={out_deep.shape}")
+    print(f"DeepNet: output shape={out_deep.shape}")
     
     # Test ShallowNet
     shallow = ShallowNet(
@@ -71,7 +71,7 @@ def test_models(X, Y):
         device=device
     )
     out_shallow = shallow(X[:10])
-    print(f"✅ ShallowNet: output shape={out_shallow.shape}")
+    print(f"ShallowNet: output shape={out_shallow.shape}")
     
     return accordion, deep, shallow
 
@@ -100,7 +100,7 @@ def test_training(model, X, Y):
         log_interval=5
     )
     
-    print(f"✅ Training complete: train_loss={train_loss:.4f}, test_loss={test_loss:.4f}")
+    print(f"Training complete: train_loss={train_loss:.4f}, test_loss={test_loss:.4f}")
     
     return train_loss, test_loss
 
@@ -111,7 +111,7 @@ def test_complexity_bounds(model, X):
     
     bounds = model.compute_complexity_bounds(X[:100])
     
-    print("✅ Computed complexity bounds:")
+    print("Computed complexity bounds:")
     for name, value in bounds.items():
         if value is not None:
             # Handle list values separately
@@ -131,10 +131,10 @@ def main():
     
     # Check CUDA
     if torch.cuda.is_available():
-        print(f"🚀 CUDA available: {torch.cuda.get_device_name(0)}")
+        print(f"CUDA available: {torch.cuda.get_device_name(0)}")
         print(f"   Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
     else:
-        print("⚠️  Running on CPU (CUDA not available)")
+        print("Running on CPU (CUDA not available)")
     
     try:
         # Test data generation
@@ -150,19 +150,19 @@ def main():
         bounds = test_complexity_bounds(accordion, X)
         
         print("\n" + "=" * 60)
-        print("✅ All tests passed successfully!")
+        print("All tests passed.")
         print("=" * 60)
         
         # Test metrics
         print("\nFramework Validation Summary:")
-        print(f"  • Data generation: Working")
-        print(f"  • Model architectures: All 3 functional")
-        print(f"  • Training pipeline: Converging (loss decreased)")
-        print(f"  • Complexity analysis: {len(bounds)} bounds computed")
-        print(f"  • Device support: {'GPU' if torch.cuda.is_available() else 'CPU'}")
+        print(f"  - Data generation: working")
+        print(f"  - Model architectures: all 3 functional")
+        print(f"  - Training pipeline: converging (loss decreased)")
+        print(f"  - Complexity analysis: {len(bounds)} bounds computed")
+        print(f"  - Device support: {'GPU' if torch.cuda.is_available() else 'CPU'}")
         
     except Exception as e:
-        print(f"\n❌ Test failed: {e}")
+        print(f"\nTest failed: {e}")
         import traceback
         traceback.print_exc()
         return 1
